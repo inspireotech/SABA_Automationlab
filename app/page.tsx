@@ -7,12 +7,15 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
 
+  // Update the backend URL to your Railway deployment
+  const backendUrl = "https://backendsaba-production.up.railway.app";
+
   const handleRunAutomation = async (mode: string) => {
     setIsLoading(true); // Show loading spinner/message
     setStatus(null); // Reset the status message (optional)
 
     try {
-      const response = await fetch("http://127.0.0.1:8000/run-automation", {
+      const response = await fetch(`${backendUrl}/run-automation`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,7 +40,7 @@ export default function Home() {
   useEffect(() => {
     const fetchLogs = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/logs");
+        const response = await fetch(`${backendUrl}/logs`);
         if (response.ok) {
           const data = await response.json();
           setLogs((prevLogs) => [...prevLogs, ...data.logs]);
@@ -49,7 +52,7 @@ export default function Home() {
 
     const interval = setInterval(fetchLogs, 2000);
     return () => clearInterval(interval); // Cleanup on unmount
-  }, []);
+  }, [backendUrl]);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-black text-green-500 font-mono">
